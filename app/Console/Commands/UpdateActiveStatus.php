@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
 class UpdateActiveStatus extends Command
@@ -32,14 +33,32 @@ class UpdateActiveStatus extends Command
         $this->itemExpiryCheck();
     }
 
-    public function insertProduct() {
-        DB::table("products")->insert(['product_type' => 'socks', 'quantity' => 3, 'yearsActive' =>2, 'active' =>true]);
+    public function insertProduct()
+    {
+        $testDate = Date("2020-01-10");
+
+        DB::table("products")->insert(['product_type' => 'socks', 'quantity' => 3, 'active' => true, 'created_at' => $testDate]);
+        DB::table("products")->insert(['product_type' => 'shoes', 'quantity' => 5, 'active' => true, 'created_at' => $testDate]);
+
     }
 
-    public function itemExpiryCheck() {
-        DB::table("products")
-            ->where("yearsActive", '>=', 2)
-            ->where('product_type', '>=', "socks")
-            ->update(["active" => false]);
+    public function itemExpiryCheck()
+    {
+        $testDate = strtotime('2010-01-01 -2 year');
+
+        $date = DB::table("products")->select("created_at")->where("product_type", "=", "socks")->get();
+
+        $itemCreatedDate = strtotime($date[0]->created_at);
+
+        if ($itemCreatedDate > $testDate) {
+            DB::table("products")
+                ->where('product_type', '=', "socks")
+                ->update(["active" => false]);
+
+            echo "Database updated";
+        }
+        else {
+            echo "All items within two-year range";
+        }
     }
 }
