@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class UpdateActiveStatus extends Command
 {
@@ -27,6 +28,13 @@ class UpdateActiveStatus extends Command
      */
     public function handle()
     {
-        
+
+    }
+
+    public function toggleActiveStatus() {
+        DB::table("products")
+            ->where("yearsActive", '>=', 2)
+            ->where('product_type'. '=', "socks")
+            ->update(["active" => false]);
     }
 }
