@@ -6,6 +6,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 
+// Second attempt, pulled data from the database and converted to strtotime and tested that against the current day subtract 2 years.
+// Could be modified to further to change the value of socks to a parameter passed into the function so it becomes dynamic so any product_type could be passed in.
+
 class UpdateActiveStatus extends Command
 {
     /**
