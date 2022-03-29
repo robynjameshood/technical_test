@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 // Second attempt, pulled data from the database and converted to strtotime and tested that against the current day subtract 2 years.
 // Could be modified to further to change the value of socks to a parameter passed into the function so it becomes dynamic so any product_type could be passed in.
 
+// New note - expiry function is now dynamic.
+
 class UpdateActiveStatus extends Command
 {
     /**
@@ -33,7 +35,7 @@ class UpdateActiveStatus extends Command
     public function handle()
     {
         $this->insertProduct();
-        $this->itemExpiryCheck();
+        $this->itemExpiryCheck("socks");
     }
 
     public function insertProduct()
@@ -45,17 +47,17 @@ class UpdateActiveStatus extends Command
 
     }
 
-    public function itemExpiryCheck()
+    public function itemExpiryCheck(String $item)
     {
         $testDate = strtotime('2010-01-01 -2 year');
 
-        $date = DB::table("products")->select("created_at")->where("product_type", "=", "socks")->get();
+        $date = DB::table("products")->select("created_at")->where("product_type", "=", $item)->get();
 
         $itemCreatedDate = strtotime($date[0]->created_at);
 
         if ($itemCreatedDate > $testDate) {
             DB::table("products")
-                ->where('product_type', '=', "socks")
+                ->where('product_type', '=', $item)
                 ->update(["active" => false]);
 
             echo "Database updated";
