@@ -28,10 +28,15 @@ class UpdateActiveStatus extends Command
      */
     public function handle()
     {
-        $this->toggleActiveStatus();
+        $this->insertProduct();
+        $this->itemExpiryCheck();
     }
 
-    public function toggleActiveStatus() {
+    public function insertProduct() {
+        DB::table("products")->insert(['product_type' => 'socks', 'quantity' => 3, 'yearsActive' =>2, 'active' =>true]);
+    }
+
+    public function itemExpiryCheck() {
         DB::table("products")
             ->where("yearsActive", '>=', 2)
             ->where('product_type', '>=', "socks")
