@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string('product_type');
             $table->integer('quantity');
-            $table->integer('yearsActive');
             $table->string('active');
             $table->timestamps();
         });

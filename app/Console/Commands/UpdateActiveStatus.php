@@ -34,13 +34,13 @@ class UpdateActiveStatus extends Command
      */
     public function handle()
     {
-        $this->insertProduct();
+        //$this->insertProduct();
         $this->itemExpiryCheck("socks");
     }
 
     public function insertProduct()
     {
-        $testDate = Date("2020-01-10");
+        $testDate = Date("2022-01-10");
 
         DB::table("products")->insert(['product_type' => 'socks', 'quantity' => 3, 'active' => true, 'created_at' => $testDate]);
         DB::table("products")->insert(['product_type' => 'shoes', 'quantity' => 5, 'active' => true, 'created_at' => $testDate]);
@@ -49,18 +49,21 @@ class UpdateActiveStatus extends Command
 
     public function itemExpiryCheck(String $item)
     {
-        $testDate = strtotime('2010-01-01 -2 year');
+        $testDate = strtotime('2022-04-01 -2 year');
 
         $date = DB::table("products")->select("created_at")->where("product_type", "=", $item)->get();
 
         $itemCreatedDate = strtotime($date[0]->created_at);
+
+        echo $itemCreatedDate . "\n";
+        echo $testDate;
 
         if ($itemCreatedDate > $testDate) {
             DB::table("products")
                 ->where('product_type', '=', $item)
                 ->update(["active" => false]);
 
-            echo "Database updated";
+            echo $item . " Database updated";
         }
         else {
             echo "All items within two-year range";
