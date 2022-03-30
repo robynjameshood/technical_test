@@ -34,7 +34,7 @@ class UpdateActiveStatus extends Command
      */
     public function handle()
     {
-        //$this->insertProduct();
+        $this->insertProduct();
         $this->itemExpiryCheck("socks");
     }
 
@@ -49,7 +49,7 @@ class UpdateActiveStatus extends Command
 
     public function itemExpiryCheck(String $item)
     {
-        $testDate = strtotime('2022-04-01 -2 year');
+        $testDate = strtotime('2022-01-01 -2 year');
 
         $date = DB::table("products")->select("created_at")->where("product_type", "=", $item)->get();
 
