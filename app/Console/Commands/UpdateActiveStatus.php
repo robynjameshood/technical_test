@@ -55,9 +55,6 @@ class UpdateActiveStatus extends Command
 
         $itemCreatedDate = strtotime($date[0]->created_at);
 
-        echo $itemCreatedDate . "\n";
-        echo $testDate;
-
         if ($itemCreatedDate > $testDate) {
             DB::table("products")
                 ->where('product_type', '=', $item)
