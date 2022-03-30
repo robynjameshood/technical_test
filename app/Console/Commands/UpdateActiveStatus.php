@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use DateTime;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +41,7 @@ class UpdateActiveStatus extends Command
 
     public function insertProduct()
     {
-        $testDate = Date("2022-01-10");
+        $testDate = Date("2022-04-01");
 
         DB::table("products")->insert(['product_type' => 'socks', 'quantity' => 3, 'active' => true, 'created_at' => $testDate]);
         DB::table("products")->insert(['product_type' => 'shoes', 'quantity' => 5, 'active' => true, 'created_at' => $testDate]);
@@ -49,20 +50,23 @@ class UpdateActiveStatus extends Command
 
     public function itemExpiryCheck(String $item)
     {
-        $testDate = strtotime('2022-01-01 -2 year');
+        $today = Date("2020-03-29");
 
-        $date = DB::table("products")->select("created_at")->where("product_type", "=", $item)->get();
+        $date2 = DB::table("products")->select("created_at")->where("product_type", "=", $item)->get();
 
-        $itemCreatedDate = strtotime($date[0]->created_at);
+        $itemCreatedDate = $date2[0]->created_at; // value in unix of the date the item was inserted into the database.
 
-        if ($itemCreatedDate > $testDate) {
+        $dateTimeOne = new DateTime($today);
+        $dateTimeTwo = new DateTime($itemCreatedDate);
+        $difference = $dateTimeTwo->diff($dateTimeOne);
+
+        if ($difference->y >= 2 && $difference->m >= 0 && $difference->d > 0) {
             DB::table("products")
                 ->where('product_type', '=', $item)
                 ->update(["active" => false]);
 
             echo $item . " Database updated";
-        }
-        else {
+        } else {
             echo "All items within two-year range";
         }
     }
